@@ -1,0 +1,375 @@
+basePath: /
+definitions:
+  api.AddSchemaJSON:
+    properties:
+      amount:
+        example: 100
+        minimum: 0
+        type: number
+      user_id:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - amount
+    - user_id
+    type: object
+  api.ApproveSchemaJSON:
+    properties:
+      amount:
+        example: 100
+        minimum: 0
+        type: number
+      order_id:
+        example: 1
+        minimum: 1
+        type: integer
+      service_id:
+        example: 1
+        minimum: 1
+        type: integer
+      user_id:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - amount
+    - order_id
+    - service_id
+    - user_id
+    type: object
+  api.BalanceResponseJSON:
+    properties:
+      balance:
+        type: number
+    type: object
+  api.BalanceSchemaJSON:
+    properties:
+      user_id:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - user_id
+    type: object
+  api.DereserveSchemaJSON:
+    properties:
+      order_id:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - order_id
+    type: object
+  api.ErrorResponseJSON:
+    properties:
+      http error:
+        type: string
+    type: object
+  api.ReportResponseJSON:
+    properties:
+      filename:
+        type: string
+      link:
+        type: string
+    type: object
+  api.ReportSchemaJSON:
+    properties:
+      period:
+        example: 2022-10
+        type: string
+    required:
+    - period
+    type: object
+  api.ReserveSchemaJSON:
+    properties:
+      order_id:
+        example: 1
+        minimum: 1
+        type: integer
+      price:
+        example: 100
+        minimum: 0
+        type: number
+      service_id:
+        example: 1
+        minimum: 1
+        type: integer
+      user_id:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - order_id
+    - price
+    - service_id
+    - user_id
+    type: object
+  api.TransferSchemaJSON:
+    properties:
+      amount:
+        example: 100
+        minimum: 0
+        type: number
+      from_user_id:
+        example: 1
+        minimum: 1
+        type: integer
+      to_user_id:
+        example: 2
+        minimum: 1
+        type: integer
+    required:
+    - amount
+    - from_user_id
+    - to_user_id
+    type: object
+info:
+  contact:
+    email: ewbelonogov@ya.ru
+    name: Evgeny Belonogov
+    url: https://www.t.me/evgenchikkkkkk
+  description: A service that can perform some operations with user balances.
+  title: User Balance Service
+  version: "1.0"
+paths:
+  /add:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the "add" request body if OK.
+      parameters:
+      - description: Request body
+        in: body
+        name: AddSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.AddSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.AddSchemaJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Add money to user's balance (creates user if not exists)
+      tags:
+      - user balance
+  /approve:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the "approve" request body if OK.
+      parameters:
+      - description: Request body
+        in: body
+        name: ApproveSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.ApproveSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.ApproveSchemaJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Approve money from user's reserved balance (debit money to the company's
+        revenue)
+      tags:
+      - user balance
+  /balance:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the user balance as JSON.
+      parameters:
+      - description: Request body
+        in: body
+        name: BalanceSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.BalanceSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.BalanceResponseJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Get user balance
+      tags:
+      - user balance
+  /dereserve:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the "dereserve" request body if OK.
+      parameters:
+      - description: Request body
+        in: body
+        name: ReserveSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.DereserveSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.DereserveSchemaJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: De-reserve money from user's reserved balance
+      tags:
+      - user balance
+  /report:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the link to report download page if OK.
+      parameters:
+      - description: Request body
+        in: body
+        name: ReportSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.ReportSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.ReportResponseJSON'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Create report according to the selected period
+      tags:
+      - report
+  /report/{filename}:
+    get:
+      description: download report file if OK.
+      parameters:
+      - description: download file
+        in: path
+        name: filename
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Download report
+      tags:
+      - report
+  /reserve:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the "reserve" request body if OK.
+      parameters:
+      - description: Request body
+        in: body
+        name: ReserveSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.ReserveSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.ReserveSchemaJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Reserve money from user's real balance (deposit money to user's reserved
+        balance)
+      tags:
+      - user balance
+  /transfer:
+    post:
+      consumes:
+      - application/json
+      description: Responds with the "add" request body if OK.
+      parameters:
+      - description: Request body
+        in: body
+        name: AddSchemaJSON
+        required: true
+        schema:
+          $ref: '#/definitions/api.TransferSchemaJSON'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.AddSchemaJSON'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponseJSON'
+      summary: Transfer money from one user to another (creates user if not exists)
+      tags:
+      - user balance
+schemes:
+- http
+swagger: "2.0"

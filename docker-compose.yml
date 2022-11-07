@@ -1,0 +1,46 @@
+version: "2.11"
+
+services:
+  user-balance-service:
+    build: ./UserBalanceService
+    command: /userbalanceservice
+    network_mode: host
+    environment:
+      HOST: localhost
+      PORT: :3000
+      REPORT_DIR_PATH: /reports
+      LOG_DIR_PATH: /logs
+      DB_HOST: localhost
+      DB_PORT: 10330
+      DB_NAME: UserBalanceServiceDB
+      DB_USER: avito
+      DB_PASSWD: avito
+      GIN_MODE: release
+    volumes:
+      - .:/reports
+      - .:/logs
+    ports:
+      - "3000:3000"
+    container_name: "UserBalanceServiceContainer"
+    depends_on:
+      user-balance-service-db:
+        condition: service_healthy
+
+  user-balance-service-db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: "avito"
+      POSTGRES_PASSWORD: "avito"
+      POSTGRES_DB: "UserBalanceServiceDB"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./database/data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "10330:5432"
+    container_name: "UserBalanceServiceDBContainer"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U avito -d UserBalanceServiceDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
